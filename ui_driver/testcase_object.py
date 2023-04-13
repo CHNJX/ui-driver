@@ -4,7 +4,7 @@
 # @File     :testcase_object.py
 # @Desc     :测试用例的实体类
 from ui_driver import project_logger
-from ui_driver.page.web_page_generate import PageGenerate
+
 from ui_driver import global_val
 from ui_driver.utils import Utils
 
@@ -12,7 +12,8 @@ from ui_driver.utils import Utils
 class Testcase:
     run_set_up_class_time = 0
 
-    def __init__(self):
+    def __init__(self, project_type):
+        self.project_type = project_type
         self.set_up_class = []
         self.set_up = []
         self.ids = []
@@ -42,6 +43,10 @@ class Testcase:
         :param steps: 步骤
         :return:
         """
+        if self.project_type == 'web':
+            from ui_driver.page.web_page_generate import PageGenerate
+        else:
+            from ui_driver.page.app_page_generate import PageGenerate
         pg = PageGenerate()
         for step in steps:
             for (k, v) in step.items():

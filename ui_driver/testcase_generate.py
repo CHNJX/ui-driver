@@ -8,8 +8,8 @@ import os
 import yaml
 
 from web_demo_project_bak import project_logger
-from web_demo_project_bak.base import global_val
-from web_demo_project_bak.testcase.testcase_object import Testcase
+from ui_driver import global_val
+from ui_driver.testcase_object import Testcase
 
 
 class TestcaseGenerate:
