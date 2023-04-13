@@ -1,8 +1,3 @@
-# -*- coding:utf-8 -*-
-# @Time     :2022/7/30 10:04 上午
-# @Author   :CHNJX
-# @File     :base_page.py
-# @Desc     :page基类
 import datetime
 import logging
 import os

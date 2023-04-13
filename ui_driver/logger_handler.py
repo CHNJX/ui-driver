@@ -7,59 +7,43 @@ import logging
 import os
 import sys
 import time
-from logging.handlers import TimedRotatingFileHandler
+from datetime import datetime
 
 
 class LoggerHandler:
     workdir = os.path.split(os.path.realpath(__file__))[0]
 
     @classmethod
-    def get_logger(cls, name, package_name, log_level='debug'):
+    def get_logger(cls, name, root_path, package_name="log") -> logging:
         """
         获取日志控制器
+        :param root_path: 项目根目录
         :param name: 日至控制器名称
         :param package_name: 存放的包名
-        :param log_level: 日志收集等级 默认为debug
         """
         logger = logging.getLogger(name)
         if logger.handlers:
             return logger
-        if log_level == 'debug':
-            logger.setLevel(logging.DEBUG)
-        elif log_level == 'info':
-            logger.setLevel(logging.INFO)
-        elif log_level == 'error':
-            logger.setLevel(logging.ERROR)
-        time_format = '%Y%m%d'
-        now_string = time.strftime(time_format, time.localtime(time.time()))
-        file_name = 'log_{}.log'.format(now_string)
-        root_path = os.path.abspath(
-            os.path.join(cls.workdir, "../logs"))
-        if not os.path.exists(root_path):
-            os.mkdir(root_path)
-        _folder_path = os.path.join(root_path, package_name)
-        if not os.path.exists(_folder_path):
-            os.mkdir(_folder_path)
-        file_path = os.path.join(_folder_path, file_name)
+        logger.setLevel(logging.DEBUG)
+        now_string = datetime.now().strftime('%Y%m%d')
+        file_name = f'{now_string}_log.log'
+        logger_dir = os.path.join(root_path, package_name)
+        if not os.path.exists(logger_dir):
+            os.mkdir(logger_dir)
+        file_path = os.path.join(logger_dir, file_name)
         t = int(time.time())
-        if TimedRotatingFileHandler(file_path).when.startswith('D') and time.localtime(t).tm_mday == time.localtime(
-                TimedRotatingFileHandler(file_path).rolloverAt).tm_mday:
-            return 1
-        else:
-            pass
 
         # FileHandler
         fh = logging.FileHandler(file_path, mode='a', encoding='utf-8')
-        fh.setLevel(logging.INFO)
+        fh.setLevel(logging.DEBUG)
         formatter = logging.Formatter(
             '******%(asctime)s - %(name)s - %(filename)s,line %(lineno)s - %(levelname)s: %(message)s')
         fh.setFormatter(formatter)
 
         sh = logging.StreamHandler(sys.stdout)
         sh.setFormatter(formatter)
-        sh.setLevel(logging.INFO)
+        sh.setLevel(logging.DEBUG)
         logger.addHandler(fh)
         logger.addHandler(sh)
-        # logger.addHandler(uh)
 
         return logger
